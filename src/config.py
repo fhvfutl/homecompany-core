@@ -1,6 +1,4 @@
-"""
-Configuration module
-"""
+# Configuration module
 
 import os
 from pathlib import Path

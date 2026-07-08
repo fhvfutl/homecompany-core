@@ -1,6 +1,4 @@
-"""
-Agent manager module
-"""
+# Agent manager module
 
 import logging
 from typing import List, Dict
@@ -12,14 +10,17 @@ class Agent:
     
     def __init__(self, name: str):
         self.name = name
+        self.running = False
         logger.info(f"Agent '{name}' initialized")
     
     def run(self):
         """Метод запуска агента"""
-        raise NotImplementedError
+        self.running = True
+        logger.info(f"Agent '{self.name}' started")
     
     def stop(self):
         """Метод остановки агента"""
+        self.running = False
         logger.info(f"Agent '{self.name}' stopped")
 
 class AgentManager:
