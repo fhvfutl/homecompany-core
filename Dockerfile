@@ -1,36 +1,25 @@
-# Multi-stage build for HomeCompany
-FROM python:3.11-slim as builder
+# syntax=docker/dockerfile:1.6
 
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y     gcc     g++     && rm -rf /var/lib/apt/lists/*
+FROM python:3.11-slim AS builder
 
-# Копируем requirements и устанавливаем
+ENV PATH="/opt/venv/bin:$PATH"
+RUN python -m venv /opt/venv
+
 COPY requirements.txt /tmp/
-RUN mkdir -p /home/homecompany/.local && pip install --no-cache-dir --user -r /tmp/requirements.txt
+RUN /opt/venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Финальный образ
-FROM python:3.11-slim
 
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y     gcc     g++     curl     && rm -rf /var/lib/apt/lists/*
+FROM python:3.11-slim AS final
 
-# Создаем пользователя
-RUN useradd -m -u 1000 homecompany &&     chown -R homecompany:homecompany /home/homecompany
+# Создаем непривилегированного пользователя
+RUN groupadd -r homecompany && useradd -r -g homecompany -m -d /home/homecompany homecompany
 
-USER homecompany
+# Копируем venv целиком — путь детерминирован
+COPY --from=builder --chown=homecompany:homecompany /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Копируем установленные пакеты
-COPY --from=builder --chown=homecompany:homecompany /home/homecompany/.local /home/homecompany/.local
+WORKDIR /home/homecompany
 COPY --chown=homecompany:homecompany . /home/homecompany
 
-# Устанавливаем PATH
-ENV PATH=/home/homecompany/.local/bin:$PATH
-
-# Создаем директории
-RUN mkdir -p /home/homecompany/logs /home/homecompany/data
-
-# Устанавливаем рабочую директорию
-WORKDIR /home/homecompany
-
-# Запускаем приложение
-CMD ["python", "-m", "src.main"]
+USER homecompany
+CMD ["python", "src/app.py"]
