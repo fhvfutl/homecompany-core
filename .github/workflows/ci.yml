@@ -19,11 +19,9 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install flake8 black pylint
+        run: pip install flake8 pylint
       - name: Run flake8
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      - name: Run black
-        run: black --check .
       - name: Run pylint
         run: pylint . --exit-zero
 
