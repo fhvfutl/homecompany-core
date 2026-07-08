@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  homecompany:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: homecompany
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - LOG_LEVEL=INFO
+      - API_HOST=0.0.0.0
+      - API_PORT=5000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    volumes:
+      - ./logs:/home/homecompany/logs
+      - ./data:/home/homecompany/data
+    depends_on:
+      - redis
+    networks:
+      - homecompany-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: homecompany-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - homecompany-network
+
+networks:
+  homecompany-network:
+    driver: bridge
+
+volumes:
+  redis-data:
