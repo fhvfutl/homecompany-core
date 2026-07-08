@@ -1,17 +1,14 @@
-""\`
-Pytest configuration
-"""
-
+# Pytest configuration
 import pytest
 
 @pytest.fixture
 def config():
-    """Фикстура для конфигурации"""
+    """Fixture for configuration"""
     from src.config import Config
     return Config()
 
 @pytest.fixture
 def agent_manager():
-    """Фикстура для менеджера агентов"""
+    """Fixture for agent manager"""
     from src.agent import AgentManager
     return AgentManager()
