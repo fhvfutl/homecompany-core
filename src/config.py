@@ -37,6 +37,7 @@ class Config:
     
     # Пути к директориям (добавляем как атрибуты класса)
     LOGS_DIR = LOGS_DIR
+    CONFIG_DIR = CONFIG_DIR
 
 # Экземпляр конфигурации
 config = Config()
