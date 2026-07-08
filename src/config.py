@@ -34,6 +34,9 @@ class Config:
     REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
     REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
     REDIS_DB = int(os.getenv('REDIS_DB', 0))
+    
+    # Пути к директориям (добавляем как атрибуты класса)
+    LOGS_DIR = LOGS_DIR
 
 # Экземпляр конфигурации
 config = Config()
